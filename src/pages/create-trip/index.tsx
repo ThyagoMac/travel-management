@@ -45,9 +45,9 @@ export function CreateTripPage() {
     const guestForm = new FormData(event.currentTarget);
     const inputVal = guestForm.get('email')?.toString();
 
-    if (!inputVal) { return };
+    if (!inputVal) { return }
 
-    if (emailsToInvite.includes(inputVal)) { return };
+    if (emailsToInvite.includes(inputVal)) { return }
 
     setEmailsToInvite([...emailsToInvite, inputVal]);
 
