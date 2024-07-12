@@ -4,6 +4,8 @@ import { InviteGuestsModal } from './components/invit-guests-modal';
 import { ConfirmModal } from './components/confirm-modal';
 import { DestinationDateInput } from './components/destination-date-input';
 import { InviteGuests } from './components/invite-guests';
+import { DateRange } from 'react-day-picker';
+import { api } from '../../lib/axios';
 
 export function CreateTripPage() {
   const navigate = useNavigate();
@@ -17,9 +19,38 @@ export function CreateTripPage() {
     'homer.j.sympsons@gmail.com',
   ]);
 
-  function createTrip(event: FormEvent<HTMLFormElement>) {
+  const [destination, setDestination] = useState('');
+  const [eventStartEndDates, setEventStartEndDates] = useState<DateRange | undefined>();
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+
+  async function createTrip(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    navigate("/trips/12");
+
+    if (
+      !eventStartEndDates
+      || !eventStartEndDates?.from
+      || !eventStartEndDates?.to
+      || emailsToInvite.length < 1
+      || !userEmail
+      || !emailsToInvite
+    ) {
+      return
+    }
+
+    const response = await api.post("/trips", {
+      destination: destination,
+      ends_at: eventStartEndDates?.to,
+      starts_at: new Date(eventStartEndDates?.to),
+      owner_name: userName,
+      owner_email: userEmail,
+      emails_to_invite: emailsToInvite,
+    })
+
+    const { tripId } = response.data
+    if(tripId) {
+      navigate(`/trips/${tripId}`);
+    }
   }
 
   function toggleGuestsInput() {
@@ -72,6 +103,9 @@ export function CreateTripPage() {
           <DestinationDateInput
             isGuestsInputOpen={isGuestsInputOpen}
             toggleGuestsInput={toggleGuestsInput}
+            setDestination={setDestination}
+            eventStartEndDates={eventStartEndDates}
+            setEventStartEndDates={setEventStartEndDates}
           />
 
           {
@@ -109,6 +143,8 @@ export function CreateTripPage() {
           <ConfirmModal
             closeConfirmModal={closeConfirmModal}
             createTrip={createTrip}
+            setUserName={setUserName}
+            setUserEmail={setUserEmail}
           />
         )
       }

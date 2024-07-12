@@ -5,11 +5,15 @@ import { Button } from "../../../components/button";
 interface ConfirmModalProps {
   closeConfirmModal: () => void;
   createTrip: (event: FormEvent<HTMLFormElement>) => void;
+  setUserName: (setUserName: string) => void;
+  setUserEmail: (setUserEmail: string) => void;
 }
 
 export function ConfirmModal({
   closeConfirmModal,
-  createTrip
+  createTrip,
+  setUserName,
+  setUserEmail,
 }: ConfirmModalProps) {
   return (
     <div className='fixed inset-0 bg-black/60 flex items-center justify-center'>
@@ -36,6 +40,7 @@ export function ConfirmModal({
               type="text"
               name="name"
               placeholder="Your name"
+              onChange={event => setUserName(event.target.value)}
             />
           </div>
           <div className='px-4 h-14 bg-zinc-950 border border-zinc-800 rounded-lg flex items-center gap-2' >
@@ -45,6 +50,7 @@ export function ConfirmModal({
               type="email"
               name="email"
               placeholder="Your email"
+                onChange={event => setUserEmail(event.target.value)}
             />
           </div>
 
